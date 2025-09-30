@@ -1,0 +1,385 @@
+{
+	"info": {
+		"_postman_id": "b56c00d5-323c-4be4-9bd6-fa0426dba4f8",
+		"name": "Idemo CPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40227358"
+	},
+	"item": [
+		{
+			"name": "1. Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"token\", jsonData.data.token);\r",
+							"\r",
+							"pm.test(\"Auth API | Status: \" + jsonData.status + \" | \" + jsonData.txt , function () {\r",
+							"\tpm.expect(jsonData.status).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Token generated for \" + jsonData.data.email, function () {\r",
+							"\tconst responseJson = pm.response.json();\r",
+							"\tpm.expect(responseJson.data.token).to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": {{user_name}},\r\n    \"pwd\": {{password}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}v1/auth",
+					"host": [
+						"{{host}}v1"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Quote Save",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(pm.info.requestName + \" | Status: \" + jsonData.status + \" | \" + jsonData.txt, function () {\r",
+							"    pm.expect(jsonData.status).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"if (!jsonData.status) {\r",
+							"    postman.setEnvironmentVariable(\"quote_id\", jsonData.data[0].quote_id);\r",
+							"    postman.setEnvironmentVariable(\"policy_id\", jsonData.data[0].policy_id);\r",
+							"    postman.setEnvironmentVariable(\"premium\", jsonData.data[0].quote.data.premium_value);\r",
+							"    //postman.setEnvironmentVariable(\"premium\", jsonData.data[0].quote.data.billed_premium\r",
+							"    postman.setEnvironmentVariable(\"first_name\", jsonData.data[0].quote.data.first_name);\r",
+							"    postman.setEnvironmentVariable(\"last_name\", jsonData.data[0].quote.data.last_name);\r",
+							"    postman.setEnvironmentVariable(\"payment_id\", jsonData.data[0].payment_id);\r",
+							"    postman.setEnvironmentVariable(\"total_amount\", jsonData.data[0].quote.data.total_amount);\r",
+							"    postman.setEnvironmentVariable(\"document_id\", jsonData.data[0].document.document_id);\r",
+							"\r",
+							"    pm.test(\"Quote id generated \" + jsonData.data[0].quote_id, function () {\r",
+							"        pm.expect(jsonData.data[0].quote_id).to.not.be.empty;\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Premium Value above Zero | \" + jsonData.data[0].quote.data.premium_value, function () {\r",
+							"        pm.expect(jsonData.data[0].quote.data.premium_value).to.be.above(0);\r",
+							"    });\r",
+							"    pm.test(\"document id generated | \" + jsonData.data[0].document_id, function () {\r",
+							"         pm.expect(jsonData.data[0].document_id).to.not.be.empty;\r",
+							"         postman.setEnvironmentVariable(\"doc_id\",jsonData.data[0].document_id);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "in-auth-token",
+						"value": "{{token}}"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache"
+					},
+					{
+						"key": "Referer",
+						"value": "https://idemo.insillion.com/bb1/policy?policy_id=P000000002149"
+					},
+					{
+						"key": "Pragma",
+						"value": "no-cache"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"wf_id\": \"78\",\r\n    \"product_id\": \"M000000000036\",\r\n    \"line_of_business_tag\": \"COMMERCIAL PROPERTY\",\r\n    \"transaction_stage\": \"Quote\",\r\n    \"agent_email\": \"cpiagent@insillion.com\",\r\n    \"policy_start_date\": \"{{start_date}}\",\r\n    \"building_improvements_wiring\": \"No\",\r\n    \"building_improvements_roofing\": \"No\",\r\n    \"building_improvements_plumbing\": \"No\",\r\n    \"building_improvements_heating\": \"No\",\r\n    \"building_improvements_other\": \"No\",\r\n    \"company\": {\r\n        \"email\": \"\",\r\n        \"phone\": \"+17172337358\",\r\n        \"street\": \"272, North Street\",\r\n        \"city\": \"US - Harrisburg\",\r\n        \"postcode\": \"17101\",\r\n        \"country\": \"United States\",\r\n        \"region\": \"Pennsylvania\",\r\n        \"name\": \"Suba - 272, North Street, Harrisburg, US - 17101\",\r\n        \"company_name\": \"Suba\",\r\n        \"latitude\": 40.26508559999999,\r\n        \"longitude\": -76.88596369999999,\r\n        \"naics_code\": \"722511\",\r\n        \"naics_segment\": \"Full-Service Restaurants\"\r\n    },\r\n    \"premises_details\": [\r\n        {\r\n            \"premises_details_subject_of_insurance\": \"Business Personal Property Coverage\",\r\n            \"premises_details_amount\": 100000,\r\n            \"premises_details_coins_perc\": \"10\",\r\n            \"premises_details_valuation\": \"ACV\",\r\n            \"premises_details_causes_of_loss\": \"Basic\",\r\n            \"premises_details_inflation_guard_perc\": \"10\",\r\n            \"premises_details_deductible\": \"500\",\r\n            \"premises_details_ded_type\": \"Group 1\",\r\n            \"baserate\": \"0.15\",\r\n            \"lzipcode\": \"06001\",\r\n            \"lcity\": \"Avon\",\r\n            \"lstate\": \"Connecticut\",\r\n            \"rate2\": 0.15675,\r\n            \"rate3\": 0.96,\r\n            \"cover_base_premium\": 150,\r\n            \"index\": 0,\r\n            \"uid\": \"EsH(V[\"\r\n        }\r\n    ],\r\n    \"pincode\": \"06001\",\r\n    \"state\": \"Connecticut\",\r\n    \"city\": \"Avon\",\r\n    \"prot_cl\": \"3\",\r\n    \"building_description\": \"Wheat Farming\",\r\n    \"mandatory_cover\": [\r\n        {\r\n            \"mandatory_cover_name\": \"Burglary Cover\",\r\n            \"mandatory_cover_opted\": \"Yes\",\r\n            \"mandatory_cover_limit\": 10000,\r\n            \"mandatory_cover_rate\": \"0.6\",\r\n            \"mandatory_cover_premium\": 60,\r\n            \"uid\": \"mPhque\",\r\n            \"added\": true,\r\n        }\r\n    ],\r\n    \"total_premium\": 614.25,\r\n    \"nstp_flag\": \"No\",\r\n    \"base_prem\": 150,\r\n    \"tax\": 29.25,\r\n    \"base_rate\": 0.1875,\r\n    \"prot_cl_fact\": 1.25,\r\n    \"rate1\": 1,\r\n    \"rate4\": 1.25,\r\n    \"total_base_premium\": 150,\r\n    \"total_additional_cover_premium\": 60,\r\n    \"start_date\": \"08/14/2025\",\r\n    \"avp_uw_condition\": \"N\",\r\n    \"jr_uw_condition\": \"N\",\r\n    \"policy_end_date\": \"{{end_date}}\",\r\n    \"premium_value\": 614.25,\r\n    \"pro_rata_days\": 365,\r\n    \"sr_uw_condition\": \"N\",\r\n    \"subtext_end_date\": \"08/13/2026\",\r\n    \"total_additional_cover\": 60,\r\n    \"total_amount\": \"644.96\",\r\n    \"total_mandatory_additional_cover\": 60,\r\n    \"computed_premium_value\": 614.25,\r\n    \"total_tax\": 30.71,\r\n    \"email\": \"agent@insillion.com\",\r\n    \"mobile_no\": \"12125555566\",\r\n    \"product_name\": \"Commercial Property Insurance\",\r\n    \"product_desc\": \"Commercial Property Insurance(Add on)\",\r\n    \"product_group_id\": \"PG000000000021\",\r\n    \"par_product_id\": \"M000000000003\",\r\n    \"product_group_name\": \"Property\",\r\n    \"product_group_code\": \"P001\",\r\n    \"policy_id\": \"P000000002149\",\r\n    \"hh_address\": \"1096 Main St, Branford, CT, 06405\",\r\n    \"_ready\": \"1\",\r\n    \"agent_broker_code\": \"369\",\r\n    \"agent_broker_id\": \"BR000000000011\",\r\n    \"agent_name\": \"cpiagent\",\r\n    \"agent_deposit_balance\": \"9999993453.9600\",\r\n    \"broker_code\": \"369\",\r\n    \"broker_id\": \"BR000000000011\",\r\n    \"broker_name\": \"CPI Broker\",\r\n    \"broker_group_id\": \"G000000000026\",\r\n    \"broker_deposit_balance_mode\": \"broker\",\r\n    \"uuid\": \"fad05ef8-4aa6-43b8-8d7a-038d6aa4ad8a\",\r\n    \"author\": \"cpiagent@insillion.com\",\r\n    \"ip\": \"27.5.83.118\",\r\n    \"c_start_date\": \"2025-08-14\",\r\n    \"c_end_date\": \"2026-08-13\",\r\n    \"premium_calc_html_version\": 3,\r\n    \"proposal_form_html_version\": 3,\r\n    \"premium_calc_js_version\": 3,\r\n    \"proposal_form_js_version\": 3,\r\n    \"quote_valid\": 1,\r\n    \"error_count\": 0\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}v1/quote",
+					"host": [
+						"{{host}}v1"
+					],
+					"path": [
+						"quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Quote Finalize",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(pm.info.requestName + \" | Status: \" + jsonData.status + \" | \" + jsonData.txt, function () {\r",
+							"    pm.expect(jsonData.status).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"if (!jsonData.status) {\r",
+							"    postman.setEnvironmentVariable(\"quote_id\", jsonData.data[0].quote_id);\r",
+							"    postman.setEnvironmentVariable(\"policy_id\", jsonData.data[0].policy_id);\r",
+							"    postman.setEnvironmentVariable(\"premium\", jsonData.data[0].quote.data.premium_value);\r",
+							"    //postman.setEnvironmentVariable(\"premium\", jsonData.data[0].quote.data.billed_premium\r",
+							"    postman.setEnvironmentVariable(\"first_name\", jsonData.data[0].quote.data.first_name);\r",
+							"    postman.setEnvironmentVariable(\"last_name\", jsonData.data[0].quote.data.last_name);\r",
+							"    postman.setEnvironmentVariable(\"payment_id\", jsonData.data[0].payment_id);\r",
+							"    postman.setEnvironmentVariable(\"total_amount\", jsonData.data[0].quote.data.total_amount);\r",
+							"    postman.setEnvironmentVariable(\"document_id\", jsonData.data[0].document.document_id);\r",
+							"\r",
+							"    pm.test(\"Quote id generated \" + jsonData.data[0].quote_id, function () {\r",
+							"        pm.expect(jsonData.data[0].quote_id).to.not.be.empty;\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Premium Value above Zero | \" + jsonData.data[0].quote.data.premium_value, function () {\r",
+							"        pm.expect(jsonData.data[0].quote.data.premium_value).to.be.above(0);\r",
+							"    });\r",
+							"    pm.test(\"document id generated | \" + jsonData.data[0].document_id, function () {\r",
+							"         pm.expect(jsonData.data[0].document_id).to.not.be.empty;\r",
+							"         postman.setEnvironmentVariable(\"doc_id\",jsonData.data[0].document_id);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "in-auth-token",
+						"value": "{{token}}"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache"
+					},
+					{
+						"key": "Referer",
+						"value": "https://idemo.insillion.com/bb1/policy?policy_id=P000000002149"
+					},
+					{
+						"key": "Pragma",
+						"value": "no-cache"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"wf_id\": \"78\",\r\n    \"product_id\": \"M000000000036\",\r\n    \"line_of_business_tag\": \"COMMERCIAL PROPERTY\",\r\n    \"quote_id\": \"{{quote_id}}\",\r\n    \"transaction_stage\": \"Quote\",\r\n    \"agent_email\": \"cpiagent@insillion.com\",\r\n    \"policy_start_date\": \"{{start_date}}\",\r\n    \"building_improvements_wiring\": \"No\",\r\n    \"building_improvements_roofing\": \"No\",\r\n    \"building_improvements_plumbing\": \"No\",\r\n    \"building_improvements_heating\": \"No\",\r\n    \"building_improvements_other\": \"No\",\r\n    \"company\": {\r\n        \"email\": \"\",\r\n        \"phone\": \"+17172337358\",\r\n        \"street\": \"272, North Street\",\r\n        \"city\": \"US - Harrisburg\",\r\n        \"postcode\": \"17101\",\r\n        \"country\": \"United States\",\r\n        \"region\": \"Pennsylvania\",\r\n        \"name\": \"Suba - 272, North Street, Harrisburg, US - 17101\",\r\n        \"company_name\": \"Suba\",\r\n        \"latitude\": 40.26508559999999,\r\n        \"longitude\": -76.88596369999999,\r\n        \"naics_code\": \"722511\",\r\n        \"naics_segment\": \"Full-Service Restaurants\"\r\n    },\r\n    \"premises_details\": [\r\n        {\r\n            \"premises_details_subject_of_insurance\": \"Business Personal Property Coverage\",\r\n            \"premises_details_amount\": 100000,\r\n            \"premises_details_coins_perc\": \"10\",\r\n            \"premises_details_valuation\": \"ACV\",\r\n            \"premises_details_causes_of_loss\": \"Basic\",\r\n            \"premises_details_inflation_guard_perc\": \"10\",\r\n            \"premises_details_deductible\": \"500\",\r\n            \"premises_details_ded_type\": \"Group 1\",\r\n            \"baserate\": \"0.15\",\r\n            \"lzipcode\": \"06001\",\r\n            \"lcity\": \"Avon\",\r\n            \"lstate\": \"Connecticut\",\r\n            \"rate2\": 0.15675,\r\n            \"rate3\": 0.96,\r\n            \"cover_base_premium\": 150,\r\n            \"index\": 0,\r\n            \"uid\": \"EsH(V[\"\r\n        }\r\n    ],\r\n    \"pincode\": \"06001\",\r\n    \"state\": \"Connecticut\",\r\n    \"city\": \"Avon\",\r\n    \"street_address\": \"\",\r\n    \"building_number\": \"\",\r\n    \"prot_cl\": \"3\",\r\n    \"building_description\": \"Wheat Farming\",\r\n    \"mandatory_cover\": [\r\n        {\r\n            \"mandatory_cover_name\": \"Burglary Cover\",\r\n            \"mandatory_cover_opted\": \"Yes\",\r\n            \"mandatory_cover_limit\": 10000,\r\n            \"mandatory_cover_rate\": \"0.6\",\r\n            \"mandatory_cover_premium\": 60,\r\n            \"uid\": \"mPhque\",\r\n            \"addon_rate\": 0,\r\n            \"added\": true,\r\n            \"index\": 0\r\n        }\r\n    ],\r\n    \"total_premium\": 614.25,\r\n    \"nstp_flag\": \"No\",\r\n    \"base_prem\": 150,\r\n    \"tax\": 29.25,\r\n    \"base_rate\": 0.1875,\r\n    \"prot_cl_fact\": 1.25,\r\n    \"rate1\": 1,\r\n    \"rate4\": 1.25,\r\n    \"total_base_premium\": 150,\r\n    \"total_additional_cover_premium\": 60,\r\n    \"start_date\": \"08/14/2025\",\r\n    \"avp_uw_condition\": \"N\",\r\n    \"jr_uw_condition\": \"N\",\r\n    \"policy_end_date\": \"{{end_date}}\",\r\n    \"premium_value\": 614.25,\r\n    \"pro_rata_days\": 365,\r\n    \"sr_uw_condition\": \"N\",\r\n    \"subtext_end_date\": \"08/13/2026\",\r\n    \"total_additional_cover\": 60,\r\n    \"total_amount\": \"644.96\",\r\n    \"total_mandatory_additional_cover\": 60,\r\n    \"computed_premium_value\": 614.25,\r\n    \"total_tax\": 30.71,\r\n    \"email\": \"agent@insillion.com\",\r\n    \"mobile_no\": \"12125555566\",\r\n    \"product_name\": \"Commercial Property Insurance\",\r\n    \"product_desc\": \"Commercial Property Insurance(Add on)\",\r\n    \"product_group_id\": \"PG000000000021\",\r\n    \"par_product_id\": \"M000000000003\",\r\n    \"product_group_name\": \"Property\",\r\n    \"product_group_code\": \"P001\",\r\n    \"policy_id\": \"P000000002149\",\r\n    \"hh_address\": \"1096 Main St, Branford, CT, 06405\",\r\n    \"_ready\": \"1\",\r\n    \"agent_broker_code\": \"369\",\r\n    \"agent_broker_id\": \"BR000000000011\",\r\n    \"agent_name\": \"cpiagent\",\r\n    \"agent_deposit_balance\": \"9999993453.9600\",\r\n    \"broker_code\": \"369\",\r\n    \"agent_code\": \"null\",\r\n    \"broker_id\": \"BR000000000011\",\r\n    \"broker_name\": \"CPI Broker\",\r\n    \"broker_group_id\": \"G000000000026\",\r\n    \"broker_deposit_balance_mode\": \"broker\",\r\n    \"uuid\": \"133a0a74-8019-43e8-a045-ea6d832ab7f1\",\r\n    \"author\": \"cpiagent@insillion.com\",\r\n    \"c_start_date\": \"2025-08-14\",\r\n    \"c_end_date\": \"2026-08-13\",\r\n    \"premium_calc_html_version\": 3,\r\n    \"proposal_form_html_version\": 3,\r\n    \"premium_calc_js_version\": 3,\r\n    \"proposal_form_js_version\": 3,\r\n    \"quote_valid\": 1,\r\n    \"__finalize\": 1\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}v1/quote",
+					"host": [
+						"{{host}}v1"
+					],
+					"path": [
+						"quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(pm.info.requestName + \" | Status: \" + jsonData.status + \" | \" + \"Payment Completed Successfully\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(0);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test(\"quote_no=\"+ jsonData.data[0].quote_no,function (){ pm.expect(jsonData.status).to.eql(0);})\r",
+							"pm.test(\"policy_no=\"+ jsonData.data[0].policy_no,function (){ pm.expect(jsonData.status).to.eql(0);})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "in-auth-token",
+						"value": "{{token}}"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache"
+					},
+					{
+						"key": "Referer",
+						"value": "https://idemo.insillion.com/bb1/policy?policy_id=P000000002149"
+					},
+					{
+						"key": "Pragma",
+						"value": "no-cache"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"key\": \"{{payment_id}}\",\r\n    \"amount\": {{total_amount}}\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}v1/payment/cash",
+					"host": [
+						"{{host}}v1"
+					],
+					"path": [
+						"payment",
+						"cash"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const moment = require('moment');",
+					"//pm.globals.set(\"Currentdate\", moment().format(\"MM/DD/YYYY\"));",
+					"var e_date =  moment().add(365, 'days').format(\"YYYY-MM-DD\");",
+					" ",
+					"pm.collectionVariables.set (\"start_date\", moment().format(\"YYYY-MM-DD\"));",
+					"pm.collectionVariables.set (\"end_date\", e_date);",
+					"pm.collectionVariables.set (\"endr_start_date\", moment().format(\"YYYY-MM-DD HH:MM:SS\"));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "start_date",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "end_date",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "endr_start_date",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
