@@ -1,8 +1,8 @@
 # POST /api/v1/auth
 
-This `auth` endpoint allows users to authenticate and obtain access to Carma's Insurance policy issuance system.
+This `auth` endpoint allows users to authenticate and obtain access to our Insurance policy issuance system.
 
-By default, the auth token remains valid for 15 minutes (idle period). To extend this duration for each user, kindly reach out to the admin/Carma.
+By default, the auth token remains valid for 15 minutes (idle period). To extend this duration for each user, kindly reach out to the admin.
 
 We recommend making the auth request prior to each transaction.
 
