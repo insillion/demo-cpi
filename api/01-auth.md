@@ -15,7 +15,7 @@ We recommend making the auth request prior to each transaction.
 
 The token from this request's response is used for subsequent API calls.
 
-Please reach out to [sales@carma365.com](https://mailto:sales@carma365.com) to obtain Testing and/or Production credentials.
+Please reach out to [sales@insillion.com](https://mailto:sales@insillion.com) to obtain Testing and/or Production credentials.
 
 **Response**:
 
@@ -26,4 +26,4 @@ Please reach out to [sales@carma365.com](https://mailto:sales@carma365.com) to o
 | token | System generated token to access other APIs. |
 | email | The email of the logged-in user. |
 
-_**By default – Tokens are configured to be valid for 15 minute sessions. To extend this duration, kindly reach out to**_ [<i><b>sales@carma365.com</b></i>](https://mailto:sales@carma365.com)_**.**_
+_**By default – Tokens are configured to be valid for 15 minute sessions. To extend this duration, kindly reach out to**_ [<i><b>sales@insillion.com</b></i>](https://mailto:sales@insillion.com)_**.**_
